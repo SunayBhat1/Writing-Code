@@ -34,7 +34,7 @@ def getTeamData():
         'Tampa Bay Buccaneers':'TB',
         'Kansas City Chiefs':'KC',
         'Los Angeles Rams':'LAR',
-        'Chicago Bear':'CHI'}
+        'Chicago Bears':'CHI'}
 
     teamData_offense = pd.DataFrame(columns=['GP','Total YDS','YPG','Passing YDS','Passing YPG','Rushing YDS','Rushing YPG','Total Points','PPG'], index = list(teamDict.values()))
     teamData_defense = pd.DataFrame(columns=['GP','Total YDS','YPG','Passing YDS','Passing YPG','Rushing YDS','Rushing YPG','Total Points','PPG'], index = list(teamDict.values()))
@@ -50,28 +50,28 @@ def getTeamData():
     offsense_page = BeautifulSoup(html,features='lxml')
 
         # Populate Team Data table from ESPN Web
-    for i in range (2,30):
+    for i in range (2,34):
         team = teamDict[defense_page.findAll('tr')[i].findAll('td')[0].getText()]
-        teamData_defense.at[team,'GP'] = int(defense_page.findAll('tr')[i+30].findAll('td')[0].getText())
-        teamData_defense.at[team,'Total YDS'] = int(defense_page.findAll('tr')[i+30].findAll('td')[1].getText())
-        teamData_defense.at[team,'YPG'] = float(defense_page.findAll('tr')[i+30].findAll('td')[2].getText())
-        teamData_defense.at[team,'Passing YDS'] = int(defense_page.findAll('tr')[i+30].findAll('td')[3].getText())
-        teamData_defense.at[team,'Passing YPG'] = float(defense_page.findAll('tr')[i+30].findAll('td')[4].getText())
-        teamData_defense.at[team,'Rushing YDS'] = int(defense_page.findAll('tr')[i+30].findAll('td')[5].getText())
-        teamData_defense.at[team,'Rushing YPG'] = float(defense_page.findAll('tr')[i+30].findAll('td')[6].getText())
-        teamData_defense.at[team,'Total Points'] = int(defense_page.findAll('tr')[i+30].findAll('td')[7].getText())
-        teamData_defense.at[team,'PPG'] = float(defense_page.findAll('tr')[i+30].findAll('td')[8].getText())
+        teamData_defense.at[team,'GP'] = int(defense_page.findAll('tr')[i+34].findAll('td')[0].getText())
+        teamData_defense.at[team,'Total YDS'] = int(defense_page.findAll('tr')[i+34].findAll('td')[1].getText().replace(',', ''))
+        teamData_defense.at[team,'YPG'] = float(defense_page.findAll('tr')[i+34].findAll('td')[2].getText().replace(',', ''))
+        teamData_defense.at[team,'Passing YDS'] = int(defense_page.findAll('tr')[i+34].findAll('td')[3].getText().replace(',', ''))
+        teamData_defense.at[team,'Passing YPG'] = float(defense_page.findAll('tr')[i+34].findAll('td')[4].getText().replace(',', ''))
+        teamData_defense.at[team,'Rushing YDS'] = int(defense_page.findAll('tr')[i+34].findAll('td')[5].getText().replace(',', ''))
+        teamData_defense.at[team,'Rushing YPG'] = float(defense_page.findAll('tr')[i+34].findAll('td')[6].getText().replace(',', ''))
+        teamData_defense.at[team,'Total Points'] = int(defense_page.findAll('tr')[i+34].findAll('td')[7].getText().replace(',', ''))
+        teamData_defense.at[team,'PPG'] = float(defense_page.findAll('tr')[i+34].findAll('td')[8].getText().replace(',', ''))
 
         team = teamDict[offsense_page.findAll('tr')[i].findAll('td')[0].getText()]
-        teamData_offense.at[team,'GP'] = int(offsense_page.findAll('tr')[i+30].findAll('td')[0].getText())
-        teamData_offense.at[team,'Total YDS'] = int(offsense_page.findAll('tr')[i+30].findAll('td')[1].getText())
-        teamData_offense.at[team,'YPG'] = float(offsense_page.findAll('tr')[i+30].findAll('td')[2].getText())
-        teamData_offense.at[team,'Passing YDS'] = int(offsense_page.findAll('tr')[i+30].findAll('td')[3].getText())
-        teamData_offense.at[team,'Passing YPG'] = float(offsense_page.findAll('tr')[i+30].findAll('td')[4].getText())
-        teamData_offense.at[team,'Rushing YDS'] = int(offsense_page.findAll('tr')[i+30].findAll('td')[5].getText())
-        teamData_offense.at[team,'Rushing YPG'] = float(offsense_page.findAll('tr')[i+30].findAll('td')[6].getText())
-        teamData_offense.at[team,'Total Points'] = int(offsense_page.findAll('tr')[i+30].findAll('td')[7].getText())
-        teamData_offense.at[team,'PPG'] = float(offsense_page.findAll('tr')[i+30].findAll('td')[8].getText())
+        teamData_offense.at[team,'GP'] = int(offsense_page.findAll('tr')[i+34].findAll('td')[0].getText().replace(',', ''))
+        teamData_offense.at[team,'Total YDS'] = int(offsense_page.findAll('tr')[i+34].findAll('td')[1].getText().replace(',', ''))
+        teamData_offense.at[team,'YPG'] = float(offsense_page.findAll('tr')[i+34].findAll('td')[2].getText())
+        teamData_offense.at[team,'Passing YDS'] = int(offsense_page.findAll('tr')[i+34].findAll('td')[3].getText().replace(',', ''))
+        teamData_offense.at[team,'Passing YPG'] = float(offsense_page.findAll('tr')[i+34].findAll('td')[4].getText().replace(',', ''))
+        teamData_offense.at[team,'Rushing YDS'] = int(offsense_page.findAll('tr')[i+34].findAll('td')[5].getText().replace(',', ''))
+        teamData_offense.at[team,'Rushing YPG'] = float(offsense_page.findAll('tr')[i+34].findAll('td')[6].getText().replace(',', ''))
+        teamData_offense.at[team,'Total Points'] = int(offsense_page.findAll('tr')[i+34].findAll('td')[7].getText().replace(',', ''))
+        teamData_offense.at[team,'PPG'] = float(offsense_page.findAll('tr')[i+34].findAll('td')[8].getText().replace(',', ''))
 
     return teamData_defense,teamData_offense
 
@@ -96,26 +96,61 @@ def getPlayerData(myLeague,teamData_defense,teamData_offense):
         for player in team.roster:
 
             if player.injured: continue
-            if player.proTeam in ['BAL','OAK','LAR','CHI']: continue # Delete after Monday
 
             playerDict = {}
             playerDict['Name'] = player.name
             playerDict['PlayerID'] = player.playerId
             playerDict['Week'] = myLeague.nfl_week
             playerDict['Position Rank'] = player.posRank
-            playerDict['Projected Points'] = player.stats[1]['projected_points']
             playerDict['Season Projected Points'] = player.projected_total_points
-            playerDict['Points'] = player.stats[myLeague.nfl_week-1]['points']
+            try: 
+                playerDict['Projected Points'] = player.stats[myLeague.nfl_week]['projected_points']
+                playerDict['Points'] = player.stats[myLeague.nfl_week-1]['points']
+            except: 
+                playerDict['Projected Points'] = float('NaN')
+                playerDict['Points'] = float('NaN')
             
 
+            if player.proTeam == 'OAK': player.proTeam = 'LV'
             player.pro_opponent = PRO_TEAM_MAP[pro_schedule[list(PRO_TEAM_MAP.values()).index(player.proTeam)][0]]
-            playerDict['Off YPG/OppDef YPG'] = teamData_offense.at[player.proTeam,'YPG']/teamData_defense.at[player.pro_opponent,'YPG']
-            playerDict['Off PPG/OppDef PPG'] = teamData_offense.at[player.proTeam,'PPG']/teamData_defense.at[player.pro_opponent,'PPG']
+            try:
+                playerDict['Off YPG/OppDef YPG'] = teamData_offense.at[player.proTeam,'YPG']/teamData_defense.at[player.pro_opponent,'YPG']
+                playerDict['Off PPG/OppDef PPG'] = teamData_offense.at[player.proTeam,'PPG']/teamData_defense.at[player.pro_opponent,'PPG']
+            except: print(player.proTeam)
+
             if player.position in ['QB','WR','TE','D/ST']: 
                 playerDict['Off PYPG/OppDef PYPG'] = teamData_offense.at[player.proTeam,'Passing YPG']/teamData_defense.at[player.pro_opponent,'Passing YPG']
             if player.position in ['RB','TE','D/ST']:
                 playerDict['Off RYPG/OppDef RYPG'] = teamData_offense.at[player.proTeam,'Rushing YPG']/teamData_defense.at[player.pro_opponent,'Rushing YPG']
             
             playerData[player.position] = playerData[player.position].append(playerDict, ignore_index = True)
+
+    for player in myLeague.free_agents():
+
+        if player.injured: continue
+
+        playerDict = {}
+        playerDict['Name'] = player.name
+        playerDict['PlayerID'] = player.playerId
+        playerDict['Week'] = myLeague.nfl_week
+        playerDict['Position Rank'] = player.posRank
+        playerDict['Season Projected Points'] = player.projected_total_points
+        try: 
+            playerDict['Projected Points'] = player.stats[myLeague.nfl_week]['projected_points']
+            playerDict['Points'] = player.stats[myLeague.nfl_week-2]['points']
+        except: 
+            playerDict['Projected Points'] = float('NaN')
+            playerDict['Points'] = float('NaN')
+
+        if player.proTeam == 'OAK': player.proTeam = 'LV'
+        player.pro_opponent = PRO_TEAM_MAP[pro_schedule[list(PRO_TEAM_MAP.values()).index(player.proTeam)][0]]
+        playerDict['Off YPG/OppDef YPG'] = teamData_offense.at[player.proTeam,'YPG']/teamData_defense.at[player.pro_opponent,'YPG']
+        playerDict['Off PPG/OppDef PPG'] = teamData_offense.at[player.proTeam,'PPG']/teamData_defense.at[player.pro_opponent,'PPG']
+        if player.position in ['QB','WR','TE','D/ST']: 
+            playerDict['Off PYPG/OppDef PYPG'] = teamData_offense.at[player.proTeam,'Passing YPG']/teamData_defense.at[player.pro_opponent,'Passing YPG']
+        if player.position in ['RB','TE','D/ST']:
+            playerDict['Off RYPG/OppDef RYPG'] = teamData_offense.at[player.proTeam,'Rushing YPG']/teamData_defense.at[player.pro_opponent,'Rushing YPG']
+        
+        playerData[player.position] = playerData[player.position].append(playerDict, ignore_index = True)
 
     return playerData
