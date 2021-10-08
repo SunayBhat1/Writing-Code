@@ -82,12 +82,12 @@ def getPlayerData(myLeague,teamData_defense,teamData_offense):
         31: 'BAL',32: 'HOU',33: 'BAL',34: 'HOU'}
 
     playerData = {}
-    playerData['QB'] = pd.DataFrame(columns=['Name','PlayerID','Week','Position Rank','Projected Points','Season Projected Points','Off YPG/OppDef YPG','Off PPG/OppDef PPG','Off PYPG/OppDef PYPG','Points'])
-    playerData['RB'] = pd.DataFrame(columns=['Name','PlayerID','Week','Position Rank','Projected Points','Season Projected Points','Off YPG/OppDef YPG','Off PPG/OppDef PPG','Off RYPG/OppDef RYPG','Points'])
-    playerData['WR'] = pd.DataFrame(columns=['Name','PlayerID','Week','Position Rank','Projected Points','Season Projected Points','Off YPG/OppDef YPG','Off PPG/OppDef PPG','Off PYPG/OppDef PYPG','Points'])
-    playerData['TE'] = pd.DataFrame(columns=['Name','PlayerID','Week','Position Rank','Projected Points','Season Projected Points','Off YPG/OppDef YPG','Off PPG/OppDef PPG','Off PYPG/OppDef PYPG','Off RYPG/OppDef RYPG','Points'])
-    playerData['D/ST'] = pd.DataFrame(columns=['Name','PlayerID','Week','Position Rank','Projected Points','Season Projected Points','Off YPG/OppDef YPG','Off PPG/OppDef PPG','Off PYPG/OppDef PYPG','Off RYPG/OppDef RYPG','Points'])
-    playerData['K'] = pd.DataFrame(columns=['Name','PlayerID','Week','Position Rank','Projected Points','Season Projected Points','Off YPG/OppDef YPG','Off PPG/OppDef PPG','Points'])
+    playerData['QB'] = pd.DataFrame(columns=['Name','Free Agency','PlayerID','Week','Position Rank','Projected Points','Season Projected Points','Off YPG/OppDef YPG','Off PPG/OppDef PPG','Off PYPG/OppDef PYPG','Points'])
+    playerData['RB'] = pd.DataFrame(columns=['Name','Free Agency','PlayerID','Week','Position Rank','Projected Points','Season Projected Points','Off YPG/OppDef YPG','Off PPG/OppDef PPG','Off RYPG/OppDef RYPG','Points'])
+    playerData['WR'] = pd.DataFrame(columns=['Name','Free Agency','PlayerID','Week','Position Rank','Projected Points','Season Projected Points','Off YPG/OppDef YPG','Off PPG/OppDef PPG','Off PYPG/OppDef PYPG','Points'])
+    playerData['TE'] = pd.DataFrame(columns=['Name','Free Agency','PlayerID','Week','Position Rank','Projected Points','Season Projected Points','Off YPG/OppDef YPG','Off PPG/OppDef PPG','Off PYPG/OppDef PYPG','Off RYPG/OppDef RYPG','Points'])
+    playerData['D/ST'] = pd.DataFrame(columns=['Name','Free Agency','PlayerID','Week','Position Rank','Projected Points','Season Projected Points','Off YPG/OppDef YPG','Off PPG/OppDef PPG','Off PYPG/OppDef PYPG','Off RYPG/OppDef RYPG','Points'])
+    playerData['K'] = pd.DataFrame(columns=['Name','Free Agency','PlayerID','Week','Position Rank','Projected Points','Season Projected Points','Off YPG/OppDef YPG','Off PPG/OppDef PPG','Points'])
 
     pro_schedule = myLeague._get_pro_schedule(myLeague.nfl_week)
     pro_schedule[31] = pro_schedule[33]
@@ -99,15 +99,19 @@ def getPlayerData(myLeague,teamData_defense,teamData_offense):
 
             playerDict = {}
             playerDict['Name'] = player.name
+            playerDict['Free Agency'] = False
             playerDict['PlayerID'] = player.playerId
             playerDict['Week'] = myLeague.nfl_week
             playerDict['Position Rank'] = player.posRank
             playerDict['Season Projected Points'] = player.projected_total_points
             try: 
                 playerDict['Projected Points'] = player.stats[myLeague.nfl_week]['projected_points']
-                playerDict['Points'] = player.stats[myLeague.nfl_week-1]['points']
             except: 
                 playerDict['Projected Points'] = float('NaN')
+             
+            try:
+                playerDict['Points'] = player.stats[myLeague.nfl_week-1]['points']
+            except:
                 playerDict['Points'] = float('NaN')
             
 
@@ -131,15 +135,20 @@ def getPlayerData(myLeague,teamData_defense,teamData_offense):
 
         playerDict = {}
         playerDict['Name'] = player.name
+        playerDict['Free Agency'] = True
         playerDict['PlayerID'] = player.playerId
         playerDict['Week'] = myLeague.nfl_week
         playerDict['Position Rank'] = player.posRank
         playerDict['Season Projected Points'] = player.projected_total_points
-        try: 
+        
+        try:
             playerDict['Projected Points'] = player.stats[myLeague.nfl_week]['projected_points']
-            playerDict['Points'] = player.stats[myLeague.nfl_week-2]['points']
-        except: 
+        except Exception as e: 
             playerDict['Projected Points'] = float('NaN')
+
+        try:
+            playerDict['Points'] = player.stats[myLeague.nfl_week-1]['points']
+        except Exception as e: 
             playerDict['Points'] = float('NaN')
 
         if player.proTeam == 'OAK': player.proTeam = 'LV'
